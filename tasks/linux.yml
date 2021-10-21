@@ -1,0 +1,21 @@
+# code: language=Ansible insertSpaces=true tabSize=2
+
+
+- name: Configure systemd-timesyncd
+  template:
+    src: timesyncd.conf.j2
+    dest: /etc/systemd/timesyncd.conf
+    mode: 0644
+  tags: [never, setup]
+
+- name: Resync NTP
+  shell: >
+    timedatectl set-ntp on
+  tags: [never, setup]
+
+- name: Enable systemd-timesyncd
+  service:
+    name: systemd-timesyncd
+    state: restarted
+    enabled: true
+  tags: [never, setup]
